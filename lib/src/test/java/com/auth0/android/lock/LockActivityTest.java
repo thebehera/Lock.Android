@@ -89,6 +89,7 @@ public class LockActivityTest {
 
         when(webProvider.init()).thenReturn(webBuilder);
         when(webBuilder.useCodeGrant(anyBoolean())).thenReturn(webBuilder);
+        when(webBuilder.enableLogging()).thenReturn(webBuilder);
         when(webBuilder.withConnection(anyString())).thenReturn(webBuilder);
         when(webBuilder.withConnectionScope(anyString())).thenReturn(webBuilder);
         when(webBuilder.withParameters(anyMapOf(String.class, Object.class))).thenReturn(webBuilder);
@@ -327,6 +328,7 @@ public class LockActivityTest {
         ArgumentCaptor<Map> mapCaptor = ArgumentCaptor.forClass(Map.class);
 
         verify(lockView, never()).showProgress(eq(true));
+        verify(webBuilder, never()).enableLogging();
         verify(webBuilder).withParameters(mapCaptor.capture());
         verify(webBuilder).useBrowser(eq(true));
         verify(webBuilder).withConnection(eq("my-connection"));
@@ -335,6 +337,20 @@ public class LockActivityTest {
         Map<String, String> reqParams = mapCaptor.getValue();
         assertThat(reqParams, is(notNullValue()));
         assertThat(reqParams, hasEntry("extra", "value"));
+    }
+
+    @Test
+    public void shouldCallOAuthAuthenticationWithLoggingEnabled() throws Exception {
+        OAuthConnection connection = mock(OAuthConnection.class);
+        when(connection.getName()).thenReturn("my-connection");
+        OAuthLoginEvent event = new OAuthLoginEvent(connection);
+        when(options.isLoggingEnabled()).thenReturn(true);
+        activity.onOAuthAuthenticationRequest(event);
+
+        verify(lockView, never()).showProgress(true);
+        verify(webBuilder).enableLogging();
+        verify(webBuilder).withConnection(eq("my-connection"));
+        verify(webBuilder).start(eq(activity), any(AuthCallback.class), eq(REQ_CODE_WEB_PROVIDER));
     }
 
     @Test

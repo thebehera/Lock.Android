@@ -492,6 +492,9 @@ public class PasswordlessLockActivity extends AppCompatActivity implements Activ
         if (scope != null) {
             builder.withScope(scope);
         }
+        if (options.isLoggingEnabled()) {
+            builder.enableLogging();
+        }
         builder.start(this, authProviderCallback, WEB_AUTH_REQUEST_CODE);
     }
 
