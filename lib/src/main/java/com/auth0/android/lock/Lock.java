@@ -118,7 +118,7 @@ public class Lock {
      * @return the intent to which the user has to call startActivity or startActivityForResult
      */
     @SuppressWarnings("unused")
-    public Intent newIntent(Activity activity) {
+    public Intent newIntent(Context activity) {
         Intent lockIntent = new Intent(activity, LockActivity.class);
         lockIntent.putExtra(Constants.OPTIONS_EXTRA, options);
         return lockIntent;
