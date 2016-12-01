@@ -128,20 +128,20 @@ public class Lock {
      * Should be called on the Activity holding the Lock instance's OnDestroy method, as it
      * ensures the correct Lock lifecycle handling.
      *
-     * @param activity a valid Activity context
+     * @param context a valid Activity context
      */
     @SuppressWarnings("unused")
-    public void onDestroy(Activity activity) {
-        LocalBroadcastManager.getInstance(activity).unregisterReceiver(this.receiver);
+    public void onDestroy(Context context) {
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(this.receiver);
     }
 
-    private void initialize(Activity activity) {
+    private void initialize(Context context) {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.AUTHENTICATION_ACTION);
         filter.addAction(Constants.SIGN_UP_ACTION);
         filter.addAction(Constants.CANCELED_ACTION);
         filter.addAction(Constants.INVALID_CONFIGURATION_ACTION);
-        LocalBroadcastManager.getInstance(activity).registerReceiver(this.receiver, filter);
+        LocalBroadcastManager.getInstance(context).registerReceiver(this.receiver, filter);
     }
 
     private void processEvent(Intent data) {
@@ -199,7 +199,7 @@ public class Lock {
          * @param activity a valid Activity context
          * @return a new Lock instance configured as in the Builder.
          */
-        public Lock build(@NonNull Activity activity) {
+        public Lock build(@NonNull Context activity) {
             if (options.getAccount() == null) {
                 Log.w(TAG, "com.auth0.android.Auth0 account details not defined. Trying to create it from the String resources.");
                 try {
