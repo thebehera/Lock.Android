@@ -147,4 +147,5 @@
     <string name="com_auth0_lock_password_strength_special_chars">Special characters (e.g. !@#$%^&amp;* )</string>
     <string name="com_auth0_lock_password_strength_title_at_least">And contain at least 3 of the following 4 types of characters:</string>
     <string name="com_auth0_lock_password_strength_title_must_have">Must have:</string>
+    <string name="email_address">Email Address:</string>
 </resources>

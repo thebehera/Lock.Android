@@ -24,19 +24,24 @@
 
 package com.auth0.android.lock.views;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.StringRes;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
@@ -76,10 +81,8 @@ public class ValidatedInputView extends LinearLayout {
     private static final String TAG = ValidatedInputView.class.getSimpleName();
     private static final int VALIDATION_DELAY = 500;
 
-    protected LinearLayout rootView;
-    private TextView errorDescription;
-    private EditText input;
-    private ImageView icon;
+    protected TextInputLayout rootView;
+    private AppCompatEditText input;
     private IdentityListener identityListener;
     private int inputIcon;
     private boolean hasValidInput;
@@ -112,6 +115,7 @@ public class ValidatedInputView extends LinearLayout {
         init(attrs);
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public ValidatedInputView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
@@ -119,10 +123,8 @@ public class ValidatedInputView extends LinearLayout {
 
     private void init(AttributeSet attrs) {
         inflate(getContext(), R.layout.com_auth0_lock_validated_input_view, this);
-        rootView = (LinearLayout) findViewById(R.id.com_auth0_lock_container);
-        errorDescription = (TextView) findViewById(R.id.errorDescription);
-        icon = (ImageView) findViewById(R.id.com_auth0_lock_icon);
-        input = (EditText) findViewById(R.id.com_auth0_lock_input);
+        rootView = (TextInputLayout) findViewById(R.id.com_auth0_lock_container);
+        input = (AppCompatEditText) findViewById(R.id.com_auth0_lock_input);
 
         createBackground();
         if (attrs == null || isInEditMode()) {
@@ -169,9 +171,7 @@ public class ValidatedInputView extends LinearLayout {
 
         private void runValidation() {
             hasValidInput = validate(false);
-            Handler handler = getHandler();
-            handler.removeCallbacks(uiUpdater);
-            handler.postDelayed(uiUpdater, VALIDATION_DELAY);
+            rootView.setErrorEnabled(!hasValidInput);
         }
 
         private void notifyEmailChanged(String emailInput) {
@@ -258,9 +258,9 @@ public class ValidatedInputView extends LinearLayout {
                 error = getResources().getString(R.string.com_auth0_lock_input_error_phone_number);
                 break;
         }
-        input.setHint(hint);
-        errorDescription.setText(error);
-        icon.setImageResource(inputIcon);
+        rootView.setHint(hint);
+        input.setCompoundDrawablesWithIntrinsicBounds(inputIcon, 0, 0, 0);
+        input.setError(error);
     }
 
     /**
@@ -279,14 +279,11 @@ public class ValidatedInputView extends LinearLayout {
         gd.setColor(ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal));
         ViewUtils.setBackground(parent, gd);
 
-        errorDescription.setVisibility(isValid ? INVISIBLE : VISIBLE);
         requestLayout();
     }
 
     private void createBackground() {
-        Drawable leftBackground = ViewUtils.getRoundedBackground(getResources(), ContextCompat.getColor(getContext(), R.color.com_auth0_lock_input_field_border_normal), ViewUtils.Corners.ONLY_LEFT);
         Drawable rightBackground = ViewUtils.getRoundedBackground(getResources(), ContextCompat.getColor(getContext(), isEnabled() ? R.color.com_auth0_lock_input_field_background : R.color.com_auth0_lock_input_field_background_disabled), ViewUtils.Corners.ONLY_RIGHT);
-        ViewUtils.setBackground(icon, leftBackground);
         ViewUtils.setBackground(input, rightBackground);
     }
 
@@ -295,13 +292,8 @@ public class ValidatedInputView extends LinearLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        errorDescription.measure(widthMeasureSpec, heightMeasureSpec);
-        int errorDescriptionHeight = ViewUtils.measureViewHeight(errorDescription);
         int inputHeight = ViewUtils.measureViewHeight(input);
-        ViewGroup iconHolder = (ViewGroup) icon.getParent();
-        int iconHeight = ViewUtils.measureViewHeight(iconHolder);
-        int sumHeight = Math.max(inputHeight, iconHeight) + errorDescriptionHeight;
-        setMeasuredDimension(getMeasuredWidth(), sumHeight);
+        setMeasuredDimension(getMeasuredWidth(), inputHeight);
     }
 
     /**
@@ -358,7 +350,7 @@ public class ValidatedInputView extends LinearLayout {
                 isValid = !value.isEmpty();
                 break;
             case EMAIL:
-                isValid = value.matches(EMAIL_REGEX);
+                isValid = isValidEmail(value);
                 break;
             case USERNAME:
                 isValid = value.matches(USERNAME_REGEX) && value.length() >= 1 && value.length() <= 15;
@@ -379,6 +371,11 @@ public class ValidatedInputView extends LinearLayout {
 
         Log.v(TAG, "Field validation results: Is valid? " + isValid);
         return isValid;
+    }
+
+
+    protected static boolean isValidEmail(String email) {
+        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     /**
@@ -423,14 +420,6 @@ public class ValidatedInputView extends LinearLayout {
         input.setHint(hint);
     }
 
-    /**
-     * Updates the validation error description.
-     *
-     * @param error the new error description to set.
-     */
-    public void setErrorDescription(String error) {
-        errorDescription.setText(error);
-    }
 
     /**
      * Updates the input Icon.
@@ -438,7 +427,7 @@ public class ValidatedInputView extends LinearLayout {
      * @param icon the new icon to set.
      */
     public void setIcon(@DrawableRes int icon) {
-        this.icon.setImageResource(icon);
+        this.input.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
     }
 
     /**

@@ -92,7 +92,7 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
             setDataType(DataType.USERNAME);
             String errorDescription = isCustomDatabase ? getResources().getString(R.string.com_auth0_lock_input_error_username_empty) :
                     getResources().getString(R.string.com_auth0_lock_input_error_username, minUsernameLength, maxUsernameLength);
-            setErrorDescription(errorDescription);
+            rootView.setError(errorDescription);
         } else if (style == DEFAULT) {
             setDataType(DataType.USERNAME_OR_EMAIL);
         }
@@ -111,7 +111,7 @@ public class ValidatedUsernameInputView extends ValidatedInputView {
         }
         if (getDataType() == DataType.USERNAME_OR_EMAIL) {
             //This case is only used in the LogInFormView, avoid validating against username regex
-            final boolean validEmail = value.matches(EMAIL_REGEX);
+            final boolean validEmail = isValidEmail(value);
             return validEmail || validUsernameLength;
         }
         return super.validate(validateEmptyFields);

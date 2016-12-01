@@ -22,51 +22,20 @@
   ~ THE SOFTWARE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.TextInputLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/com_auth0_lock_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-    <LinearLayout
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/com_auth0_lock_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        style="@style/Lock.Theme.Widget.Field"
+        android:drawablePadding="8dp"
+        android:drawableLeft="@drawable/com_auth0_lock_ic_email"
+        tools:ignore="MissingPrefix,RtlHardcoded"/>
 
-        <FrameLayout
-            android:layout_width="@dimen/com_auth0_lock_widget_height"
-            android:layout_height="@dimen/com_auth0_lock_widget_height"
-            android:layout_margin="@dimen/com_auth0_lock_input_field_stroke_width"
-            android:background="@color/com_auth0_lock_input_field_border_normal">
-
-            <ImageView
-                android:id="@+id/com_auth0_lock_icon"
-                style="@style/Lock.Theme.Widget.Icon"
-                android:src="@drawable/com_auth0_lock_ic_email"
-                tools:ignore="MissingPrefix" />
-
-        </FrameLayout>
-
-        <EditText
-            android:id="@+id/com_auth0_lock_input"
-            style="@style/Lock.Theme.Widget.Field"
-            android:layout_width="0dp"
-            android:layout_marginRight="@dimen/com_auth0_lock_input_field_stroke_width"
-            android:layout_marginTop="@dimen/com_auth0_lock_input_field_stroke_width"
-            android:layout_weight="1"
-            android:background="@null"
-            tools:text="email@domain.com" />
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/errorDescription"
-        style="@style/Lock.Theme.Text.ValidationError"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/com_auth0_lock_input"
-        android:layout_marginTop="@dimen/com_auth0_lock_widget_vertical_margin_field_with_error"
-        android:text="Invalid Email Address " />
-
-</LinearLayout>
+</android.support.design.widget.TextInputLayout>
