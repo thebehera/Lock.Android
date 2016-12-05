@@ -24,21 +24,21 @@
 
 package com.auth0.android.lock;
 
-abstract class Constants {
-    static final String LIBRARY_NAME = "Lock.Android";
+public abstract class Constants {
+    public static final String LIBRARY_NAME = "Lock.Android";
 
-    static final String OPTIONS_EXTRA = "com.auth0.android.lock.key.Options";
+    public static final String OPTIONS_EXTRA = "com.auth0.android.lock.key.Options";
 
-    static final String AUTHENTICATION_ACTION = "com.auth0.android.lock.action.Authentication";
-    static final String SIGN_UP_ACTION = "com.auth0.android.lock.action.SignUp";
-    static final String CANCELED_ACTION = "com.auth0.android.lock.action.Canceled";
-    static final String INVALID_CONFIGURATION_ACTION = "com.auth0.android.lock.action.InvalidConfiguration";
+    public static final String AUTHENTICATION_ACTION = "com.auth0.android.lock.action.Authentication";
+    public static final String SIGN_UP_ACTION = "com.auth0.android.lock.action.SignUp";
+    public static final String CANCELED_ACTION = "com.auth0.android.lock.action.Canceled";
+    public static final String INVALID_CONFIGURATION_ACTION = "com.auth0.android.lock.action.InvalidConfiguration";
 
-    static final String ERROR_EXTRA = "com.auth0.android.lock.extra.Error";
-    static final String ID_TOKEN_EXTRA = "com.auth0.android.lock.extra.IdToken";
-    static final String ACCESS_TOKEN_EXTRA = "com.auth0.android.lock.extra.AccessToken";
-    static final String TOKEN_TYPE_EXTRA = "com.auth0.android.lock.extra.TokenType";
-    static final String REFRESH_TOKEN_EXTRA = "com.auth0.android.lock.extra.RefreshToken";
-    static final String EMAIL_EXTRA = "com.auth0.android.lock.extra.Email";
-    static final String USERNAME_EXTRA = "com.auth0.android.lock.extra.Username";
+    public static final String ERROR_EXTRA = "com.auth0.android.lock.extra.Error";
+    public static final String ID_TOKEN_EXTRA = "com.auth0.android.lock.extra.IdToken";
+    public static final String ACCESS_TOKEN_EXTRA = "com.auth0.android.lock.extra.AccessToken";
+    public static final String TOKEN_TYPE_EXTRA = "com.auth0.android.lock.extra.TokenType";
+    public static final String REFRESH_TOKEN_EXTRA = "com.auth0.android.lock.extra.RefreshToken";
+    public static final String EMAIL_EXTRA = "com.auth0.android.lock.extra.Email";
+    public static final String USERNAME_EXTRA = "com.auth0.android.lock.extra.Username";
 }
