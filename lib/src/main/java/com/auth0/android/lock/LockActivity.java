@@ -25,6 +25,7 @@
 package com.auth0.android.lock;
 
 
+import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.app.Dialog;
@@ -211,6 +212,15 @@ public class LockActivity extends AccountAuthenticatorActivityAppCompat implemen
             intent.putExtra(Constants.TOKEN_TYPE_EXTRA, credentials.getType());
         }
 
+        String accountName = "auth0";
+        intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, accountName);
+        intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, requestedScopes);
+        intent.putExtra(AccountManager.KEY_AUTHTOKEN, credentials.getIdToken());
+        Account account = new Account(accountName, requestedScopes);
+        AccountManager.get(this).addAccountExplicitly(account, null, null);
+        AccountManager.get(this).setAuthToken(account, "idToken", credentials.getIdToken());
+
+        setAccountAuthenticatorResult(intent.getExtras());
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         finish();
     }
