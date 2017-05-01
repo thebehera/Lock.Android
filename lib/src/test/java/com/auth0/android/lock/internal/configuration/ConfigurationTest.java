@@ -104,6 +104,9 @@ public class ConfigurationTest extends GsonBaseTest {
         assertThat(configuration.hasExtraFields(), is(false));
         assertThat(configuration.getPasswordPolicy(), is(PasswordStrength.NONE));
         assertThat(configuration.mustAcceptTerms(), is(false));
+        assertThat(configuration.useLabeledSubmitButton(), is(true));
+        assertThat(configuration.hideMainScreenTitle(), is(false));
+        assertThat(configuration.usePasswordlessAutoSubmit(), is(false));
     }
 
     @Test
@@ -493,10 +496,52 @@ public class ConfigurationTest extends GsonBaseTest {
     }
 
     @Test
+    public void shouldNotHaveDefaultSupportURL() throws Exception {
+        configuration = unfilteredConfig();
+        assertThat(configuration.getSupportURL(), is(nullValue()));
+    }
+
+    @Test
+    public void shouldHaveCustomSupportURL() throws Exception {
+        options.setSupportURL("https://google.com/support");
+        configuration = new Configuration(connections, options);
+        assertThat(configuration.getSupportURL(), is(notNullValue()));
+        assertThat(configuration.getSupportURL(), is(equalTo("https://google.com/support")));
+    }
+
+    @Test
     public void shouldHaveMustAcceptTermsEnabled() throws Exception {
         options.setMustAcceptTerms(true);
         configuration = new Configuration(connections, options);
         assertThat(configuration.mustAcceptTerms(), is(true));
+    }
+
+    @Test
+    public void shouldNotUseLabeledSubmitButton() throws Exception {
+        options.setUseLabeledSubmitButton(false);
+        configuration = new Configuration(connections, options);
+        assertThat(configuration.useLabeledSubmitButton(), is(false));
+    }
+
+    @Test
+    public void shouldGetPasswordPolicy() throws Exception {
+        options.useDatabaseConnection("with-strength");
+        configuration = new Configuration(connections, options);
+        assertThat(configuration.getPasswordPolicy(), is(PasswordStrength.EXCELLENT));
+    }
+
+    @Test
+    public void shouldHideMainScreenTitle() throws Exception {
+        options.setHideMainScreenTitle(true);
+        configuration = new Configuration(connections, options);
+        assertThat(configuration.hideMainScreenTitle(), is(true));
+    }
+
+    @Test
+    public void shouldUsePasswordlessAutoSubmit() throws Exception {
+        options.setRememberLastPasswordlessLogin(true);
+        configuration = new Configuration(connections, options);
+        assertThat(configuration.usePasswordlessAutoSubmit(), is(true));
     }
 
     private Configuration unfilteredConfig() {

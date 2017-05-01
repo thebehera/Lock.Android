@@ -50,10 +50,10 @@ public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSe
         tabLayout = (TabLayout) findViewById(R.id.com_auth0_lock_tab_layout);
         tabLayout.addTab(tabLayout.newTab()
                 .setCustomView(R.layout.com_auth0_lock_tab)
-                .setText(R.string.com_auth0_lock_action_log_in));
+                .setText(R.string.com_auth0_lock_mode_log_in));
         tabLayout.addTab(tabLayout.newTab()
                 .setCustomView(R.layout.com_auth0_lock_tab)
-                .setText(R.string.com_auth0_lock_action_sign_up));
+                .setText(R.string.com_auth0_lock_mode_sign_up));
         tabLayout.setOnTabSelectedListener(this);
     }
 
@@ -87,6 +87,9 @@ public class ModeSelectionView extends LinearLayout implements TabLayout.OnTabSe
 
     public interface ModeSelectedListener {
         void onModeSelected(@AuthMode int mode);
+
+        @AuthMode
+        int getSelectedMode();
     }
 
     @AuthMode

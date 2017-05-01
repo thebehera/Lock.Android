@@ -73,6 +73,8 @@ public class Options implements Parcelable {
     private boolean loginAfterSignUp;
     private boolean mustAcceptTerms;
     private boolean useLabeledSubmitButton;
+    private boolean hideMainScreenTitle;
+    private boolean rememberLastPasswordlessLogin;
     private String defaultDatabaseConnection;
     private List<String> connections;
     private List<String> enterpriseConnectionsUsingWebForm;
@@ -84,7 +86,10 @@ public class Options implements Parcelable {
     private Theme theme;
     private String privacyURL;
     private String termsURL;
+    private String supportURL;
     private String scope;
+    private String audience;
+    private String scheme;
 
     public Options() {
         usernameStyle = UsernameStyle.DEFAULT;
@@ -96,6 +101,7 @@ public class Options implements Parcelable {
         loginAfterSignUp = true;
         useCodePasswordless = true;
         usePKCE = true;
+        useLabeledSubmitButton = true;
         authenticationParameters = new HashMap<>();
         authStyles = new HashMap<>();
         connectionsScope = new HashMap<>();
@@ -116,6 +122,8 @@ public class Options implements Parcelable {
         mustAcceptTerms = in.readByte() != WITHOUT_DATA;
         useCodePasswordless = in.readByte() != WITHOUT_DATA;
         useLabeledSubmitButton = in.readByte() != WITHOUT_DATA;
+        hideMainScreenTitle = in.readByte() != WITHOUT_DATA;
+        rememberLastPasswordlessLogin = in.readByte() != WITHOUT_DATA;
         defaultDatabaseConnection = in.readString();
         usernameStyle = in.readInt();
         initialScreen = in.readInt();
@@ -123,7 +131,10 @@ public class Options implements Parcelable {
         theme = in.readParcelable(Theme.class.getClassLoader());
         privacyURL = in.readString();
         termsURL = in.readString();
+        supportURL = in.readString();
         scope = in.readString();
+        audience = in.readString();
+        scheme = in.readString();
         if (in.readByte() == HAS_DATA) {
             connections = new ArrayList<>();
             in.readList(connections, String.class.getClassLoader());
@@ -188,6 +199,8 @@ public class Options implements Parcelable {
         dest.writeByte((byte) (mustAcceptTerms ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (useCodePasswordless ? HAS_DATA : WITHOUT_DATA));
         dest.writeByte((byte) (useLabeledSubmitButton ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (hideMainScreenTitle ? HAS_DATA : WITHOUT_DATA));
+        dest.writeByte((byte) (rememberLastPasswordlessLogin ? HAS_DATA : WITHOUT_DATA));
         dest.writeString(defaultDatabaseConnection);
         dest.writeInt(usernameStyle);
         dest.writeInt(initialScreen);
@@ -195,7 +208,10 @@ public class Options implements Parcelable {
         dest.writeParcelable(theme, flags);
         dest.writeString(privacyURL);
         dest.writeString(termsURL);
+        dest.writeString(supportURL);
         dest.writeString(scope);
+        dest.writeString(audience);
+        dest.writeString(scheme);
         if (connections == null) {
             dest.writeByte((byte) (WITHOUT_DATA));
         } else {
@@ -280,10 +296,12 @@ public class Options implements Parcelable {
         return theme;
     }
 
+    @Deprecated
     public boolean usePKCE() {
         return usePKCE;
     }
 
+    @Deprecated
     public void setUsePKCE(boolean usePKCE) {
         this.usePKCE = usePKCE;
     }
@@ -437,6 +455,17 @@ public class Options implements Parcelable {
         return termsURL;
     }
 
+    public void setSupportURL(String url) {
+        if (!Patterns.WEB_URL.matcher(url).matches()) {
+            throw new IllegalArgumentException("The given Support URL doesn't have a valid URL format: " + url);
+        }
+        this.supportURL = url;
+    }
+
+    public String getSupportURL() {
+        return supportURL;
+    }
+
     public void setMustAcceptTerms(boolean mustAcceptTerms) {
         this.mustAcceptTerms = mustAcceptTerms;
     }
@@ -462,6 +491,22 @@ public class Options implements Parcelable {
         return useLabeledSubmitButton;
     }
 
+    public void setHideMainScreenTitle(boolean hideMainScreenTitle) {
+        this.hideMainScreenTitle = hideMainScreenTitle;
+    }
+
+    public boolean hideMainScreenTitle() {
+        return hideMainScreenTitle;
+    }
+
+    public void setRememberLastPasswordlessLogin(boolean remember) {
+        this.rememberLastPasswordlessLogin = remember;
+    }
+
+    public boolean rememberLastPasswordlessAccount() {
+        return rememberLastPasswordlessLogin;
+    }
+
     public void withConnectionScope(@NonNull String connectionName, @NonNull String scope) {
         connectionsScope.put(connectionName, scope);
     }
@@ -478,5 +523,23 @@ public class Options implements Parcelable {
     @Nullable
     public String getScope() {
         return scope;
+    }
+
+    public void withAudience(@NonNull String audience) {
+        this.audience = audience;
+    }
+
+    @Nullable
+    public String getAudience() {
+        return audience;
+    }
+
+    public void withScheme(@NonNull String scheme) {
+        this.scheme = scheme;
+    }
+
+    @Nullable
+    public String getScheme() {
+        return scheme;
     }
 }

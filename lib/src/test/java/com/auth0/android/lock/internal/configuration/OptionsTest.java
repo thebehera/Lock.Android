@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.support.v7.appcompat.BuildConfig;
 
 import com.auth0.android.Auth0;
+import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.lock.AuthButtonSize;
 import com.auth0.android.lock.InitialScreen;
 import com.auth0.android.lock.R;
@@ -129,7 +130,27 @@ public class OptionsTest {
     }
 
     @Test
-    public void shouldUseWebview() throws Exception {
+    public void shouldSetSupportURL() throws Exception {
+        options.setSupportURL("https://valid.url/support");
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getSupportURL(), is("https://valid.url/support"));
+        assertThat(options.getSupportURL(), is(equalTo(parceledOptions.getSupportURL())));
+    }
+
+    @Test
+    public void shouldThrowWhenSettingSupportURLWithInvalidURL() throws Exception {
+        exception.expect(IllegalArgumentException.class);
+        exception.expectMessage("The given Support URL doesn't have a valid URL format: an-invalid/url");
+        options.setSupportURL("an-invalid/url");
+    }
+
+    @Test
+    public void shouldUseWebView() throws Exception {
         options.setUseBrowser(false);
 
         Parcel parcel = Parcel.obtain();
@@ -152,6 +173,33 @@ public class OptionsTest {
         Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
         assertThat(options.useLabeledSubmitButton(), is(true));
         assertThat(options.useLabeledSubmitButton(), is(equalTo(parceledOptions.useLabeledSubmitButton())));
+    }
+
+    @Test
+    public void shouldHideMainScreenTitle() throws Exception {
+        options.setHideMainScreenTitle(true);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.hideMainScreenTitle(), is(true));
+        assertThat(options.hideMainScreenTitle(), is(equalTo(parceledOptions.hideMainScreenTitle())));
+    }
+
+
+    @Test
+    public void shouldSetPasswordlessAutoSubmit() throws Exception {
+        options.setRememberLastPasswordlessLogin(true);
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.rememberLastPasswordlessAccount(), is(true));
+        assertThat(options.rememberLastPasswordlessAccount(), is(equalTo(parceledOptions.rememberLastPasswordlessAccount())));
     }
 
     @Test
@@ -509,6 +557,32 @@ public class OptionsTest {
         assertThat(parceledOptions.getScope(), is("some connection scope"));
     }
 
+    @Test
+    public void shouldSetAudience() throws Exception {
+        options.withAudience("https://domain.auth0.com/users");
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getAudience(), is(equalTo("https://domain.auth0.com/users")));
+        assertThat(parceledOptions.getAudience(), is("https://domain.auth0.com/users"));
+    }
+
+    @Test
+    public void shouldSetScheme() throws Exception {
+        options.withScheme("auth0");
+
+        Parcel parcel = Parcel.obtain();
+        options.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        Options parceledOptions = Options.CREATOR.createFromParcel(parcel);
+        assertThat(options.getScheme(), is(equalTo("auth0")));
+        assertThat(parceledOptions.getScheme(), is("auth0"));
+    }
+
     @SuppressWarnings("ResourceType")
     @Test
     public void shouldAddAuthStyles() throws Exception {
@@ -612,8 +686,12 @@ public class OptionsTest {
         assertThat(options.loginAfterSignUp(), is(true));
         assertThat(options.useCodePasswordless(), is(true));
         assertThat(options.mustAcceptTerms(), is(false));
-        assertThat(options.useLabeledSubmitButton(), is(false));
+        assertThat(options.useLabeledSubmitButton(), is(true));
+        assertThat(options.hideMainScreenTitle(), is(false));
+        assertThat(options.rememberLastPasswordlessAccount(), is(false));
         assertThat(options.getScope(), is(nullValue()));
+        assertThat(options.getAudience(), is(nullValue()));
+        assertThat(options.getScheme(), is(nullValue()));
         assertThat(options.usernameStyle(), is(equalTo(UsernameStyle.DEFAULT)));
         assertThat(options.authButtonSize(), is(equalTo(AuthButtonSize.UNSPECIFIED)));
         assertThat(options.getTheme(), is(notNullValue()));
@@ -636,6 +714,8 @@ public class OptionsTest {
         options.setAuthButtonSize(AuthButtonSize.BIG);
         options.setLoginAfterSignUp(true);
         options.setUseLabeledSubmitButton(true);
+        options.setHideMainScreenTitle(true);
+        options.setRememberLastPasswordlessLogin(true);
 
 
         Parcel parcel = Parcel.obtain();
@@ -655,6 +735,8 @@ public class OptionsTest {
         assertThat(options.authButtonSize(), is(equalTo(parceledOptions.authButtonSize())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
         assertThat(options.useLabeledSubmitButton(), is(equalTo(parceledOptions.useLabeledSubmitButton())));
+        assertThat(options.hideMainScreenTitle(), is(equalTo(parceledOptions.hideMainScreenTitle())));
+        assertThat(options.rememberLastPasswordlessAccount(), is(equalTo(parceledOptions.rememberLastPasswordlessAccount())));
     }
 
     @Test
@@ -671,6 +753,8 @@ public class OptionsTest {
         options.setAuthButtonSize(AuthButtonSize.SMALL);
         options.setLoginAfterSignUp(false);
         options.setUseLabeledSubmitButton(false);
+        options.setHideMainScreenTitle(false);
+        options.setRememberLastPasswordlessLogin(false);
 
 
         Parcel parcel = Parcel.obtain();
@@ -690,6 +774,8 @@ public class OptionsTest {
         assertThat(options.authButtonSize(), is(equalTo(parceledOptions.authButtonSize())));
         assertThat(options.loginAfterSignUp(), is(equalTo(parceledOptions.loginAfterSignUp())));
         assertThat(options.useLabeledSubmitButton(), is(equalTo(parceledOptions.useLabeledSubmitButton())));
+        assertThat(options.hideMainScreenTitle(), is(equalTo(parceledOptions.hideMainScreenTitle())));
+        assertThat(options.rememberLastPasswordlessAccount(), is(equalTo(parceledOptions.rememberLastPasswordlessAccount())));
     }
 
 
@@ -702,6 +788,13 @@ public class OptionsTest {
         otherParameters.put("key_other_param_int", innerIntParam);
         authenticationParameters.put("key_param_map", otherParameters);
         return authenticationParameters;
+    }
+
+    @Test
+    public void shouldCreateAuthenticationAPIClientInstance() throws Exception {
+        AuthenticationAPIClient client = options.getAuthenticationAPIClient();
+
+        assertThat(client, is(notNullValue()));
     }
 
     private List<CustomField> createCustomFields() {

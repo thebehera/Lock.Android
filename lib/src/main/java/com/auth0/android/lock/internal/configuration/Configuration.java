@@ -43,7 +43,6 @@ import java.util.Set;
 
 /**
  * Configuration class to resolve which connections are available after parsing the local options.
- * <p/>
  * Disclaimer: The classes in the internal package may change in the future. Don't use them directly.
  */
 public class Configuration {
@@ -61,6 +60,8 @@ public class Configuration {
     private boolean usernameRequired;
     private boolean mustAcceptTerms;
     private boolean useLabeledSubmitButton;
+    private boolean hideMainScreenTitle;
+    private boolean passwordlessAutoSubmit;
     @UsernameStyle
     private int usernameStyle;
     @AuthButtonSize
@@ -72,6 +73,7 @@ public class Configuration {
     private int initialScreen;
     private String termsURL;
     private String privacyURL;
+    private String supportURL;
     private List<CustomField> extraSignUpFields;
     private Map<String, Integer> authStyles;
 
@@ -170,6 +172,8 @@ public class Configuration {
         loginAfterSignUp = options.loginAfterSignUp();
         mustAcceptTerms = options.mustAcceptTerms();
         useLabeledSubmitButton = options.useLabeledSubmitButton();
+        hideMainScreenTitle = options.hideMainScreenTitle();
+        passwordlessAutoSubmit = options.rememberLastPasswordlessAccount();
 
         authStyles = options.getAuthStyles();
         extraSignUpFields = options.getCustomFields();
@@ -188,6 +192,7 @@ public class Configuration {
 
         this.termsURL = options.getTermsURL() == null ? "https://auth0.com/terms" : options.getTermsURL();
         this.privacyURL = options.getPrivacyURL() == null ? "https://auth0.com/privacy" : options.getPrivacyURL();
+        this.supportURL = options.getSupportURL();
     }
 
     @StyleRes
@@ -279,11 +284,24 @@ public class Configuration {
         return privacyURL;
     }
 
+    @Nullable
+    public String getSupportURL() {
+        return supportURL;
+    }
+
     public boolean mustAcceptTerms() {
         return mustAcceptTerms;
     }
 
     public boolean useLabeledSubmitButton() {
         return useLabeledSubmitButton;
+    }
+
+    public boolean hideMainScreenTitle() {
+        return hideMainScreenTitle;
+    }
+
+    public boolean usePasswordlessAutoSubmit() {
+        return passwordlessAutoSubmit;
     }
 }

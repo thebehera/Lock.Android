@@ -216,6 +216,17 @@ public class PasswordlessLock {
         }
 
         /**
+         * Control the visibility of the header's Title on the main screen. By default it will show the header's Title on the main screen.
+         *
+         * @param hideMainScreenTitle if it should show or hide the header's Title on the main screen.
+         * @return the current builder instance
+         */
+        public Builder hideMainScreenTitle(boolean hideMainScreenTitle) {
+            options.setHideMainScreenTitle(hideMainScreenTitle);
+            return this;
+        }
+
+        /**
          * Defines the Passwordless type to use in the Authentication as Code. Default value is to use Code
          *
          * @return the current Builder instance
@@ -236,6 +247,16 @@ public class PasswordlessLock {
         }
 
         /**
+         * Whether Lock should remember the last used passwordless identity and auto request a sign or not. By default, lock will not remember the last login.
+         *
+         * @return the current Builder instance
+         */
+        public Builder rememberLastLogin(boolean remember) {
+            options.setRememberLastPasswordlessLogin(remember);
+            return this;
+        }
+
+        /**
          * Whether to use the Browser for Authentication with Identity Providers or the inner WebView.
          *
          * @param useBrowser or WebView. By default, the Authentication flow will use the Browser.
@@ -249,12 +270,14 @@ public class PasswordlessLock {
         }
 
         /**
-         * Whether to use implicit grant or code grant when performing calls to /authorize.
+         * Whether to use implicit grant or code grant when performing calls to /authorize. This only affects passive authentication.
          * Default is {@code false}
          *
          * @param useImplicitGrant if Lock will use implicit grant instead of code grant.
          * @return the current Builder instance
+         * @deprecated Lock should always use the code grant for passive authentication. This is the default behavior.
          */
+        @Deprecated
         public Builder useImplicitGrant(boolean useImplicitGrant) {
             options.setUsePKCE(!useImplicitGrant);
             return this;
@@ -349,6 +372,39 @@ public class PasswordlessLock {
          */
         public Builder withScope(@NonNull String scope) {
             options.withScope(scope);
+            return this;
+        }
+
+        /**
+         * Sets the Audience or API Identifier to request access to when performing the Authentication.
+         *
+         * @param audience to use in the Authentication.
+         * @return the current builder instance
+         */
+        public Builder withAudience(@NonNull String audience) {
+            options.withAudience(audience);
+            return this;
+        }
+
+        /**
+         * Specify a custom Scheme for the redirect url used to send the Web Auth results. Default redirect url scheme is 'https'.
+         *
+         * @param scheme to use in the Web Auth redirect uri.
+         * @return the current builder instance
+         */
+        public Builder withScheme(@NonNull String scheme) {
+            options.withScheme(scheme);
+            return this;
+        }
+
+        /**
+         * Sets the url of your support page for your application that will be used when an error occurs and Lock is unable to handle it. In this case it will show an error screen and if there is a support url will also show a button to open that page in the browser.
+         *
+         * @param url to your support page or where your customers can request assistance. By default no page is set.
+         * @return the current builder instance
+         */
+        public Builder setSupportURL(@NonNull String url) {
+            options.setSupportURL(url);
             return this;
         }
 

@@ -29,6 +29,8 @@ abstract class Constants {
 
     static final String OPTIONS_EXTRA = "com.auth0.android.lock.key.Options";
 
+    static final String CONNECTION_SCOPE_KEY = "connection_scope";
+
     static final String AUTHENTICATION_ACTION = "com.auth0.android.lock.action.Authentication";
     static final String SIGN_UP_ACTION = "com.auth0.android.lock.action.SignUp";
     static final String CANCELED_ACTION = "com.auth0.android.lock.action.Canceled";
@@ -39,6 +41,7 @@ abstract class Constants {
     static final String ACCESS_TOKEN_EXTRA = "com.auth0.android.lock.extra.AccessToken";
     static final String TOKEN_TYPE_EXTRA = "com.auth0.android.lock.extra.TokenType";
     static final String REFRESH_TOKEN_EXTRA = "com.auth0.android.lock.extra.RefreshToken";
+    static final String EXPIRES_IN_EXTRA = "com.auth0.android.lock.extra.ExpiresIn";
     static final String EMAIL_EXTRA = "com.auth0.android.lock.extra.Email";
     static final String USERNAME_EXTRA = "com.auth0.android.lock.extra.Username";
 }

@@ -251,12 +251,14 @@ public class Lock {
         }
 
         /**
-         * Whether to use implicit grant or code grant when performing calls to /authorize.
+         * Whether to use implicit grant or code grant when performing calls to /authorize. This only affects passive authentication.
          * Default is {@code false}
          *
          * @param useImplicitGrant if Lock will use implicit grant instead of code grant.
          * @return the current Builder instance
+         * @deprecated Lock should always use the code grant for passive authentication. This is the default behavior.
          */
+        @Deprecated
         public Builder useImplicitGrant(boolean useImplicitGrant) {
             options.setUsePKCE(!useImplicitGrant);
             return this;
@@ -358,6 +360,7 @@ public class Lock {
         /**
          * Whether to show the Log In screen or not. It can be enabled/disabled locally, regardless the Dashboard configuration.
          *
+         * @param allow whether to allow or not the login screen.
          * @return the current builder instance
          */
         public Builder allowLogIn(boolean allow) {
@@ -368,6 +371,7 @@ public class Lock {
         /**
          * Whether to show the Sign Up screen or not. It can be enabled/disabled locally, regardless the Dashboard configuration.
          *
+         * @param allow whether to allow or not the sign up screen.
          * @return the current builder instance
          */
         public Builder allowSignUp(boolean allow) {
@@ -378,6 +382,7 @@ public class Lock {
         /**
          * Whether to show the Forgot Password screen or not. It can be enabled/disabled locally, regardless the Dashboard configuration.
          *
+         * @param allow whether to allow or not the forgot password screen.
          * @return the current builder instance
          */
         public Builder allowForgotPassword(boolean allow) {
@@ -386,13 +391,25 @@ public class Lock {
         }
 
         /**
-         * Whether if the submit button will display a label or just an icon.
+         * Whether if the submit button will display a label or just an icon. By default it will use the label.
+         * If {@link #hideMainScreenTitle(boolean)} is set to true this setting is ignored and the submit button will use label.
          *
-         * @param useLabeledSubmitButton or icon. By default it will use icon.
+         * @param useLabeledSubmitButton or icon.
          * @return the current builder instance
          */
         public Builder useLabeledSubmitButton(boolean useLabeledSubmitButton) {
             options.setUseLabeledSubmitButton(useLabeledSubmitButton);
+            return this;
+        }
+
+        /**
+         * Control the visibility of the header's Title on the main screen, this is for Log In and Sign Up. By default it will show the header's Title on the main screen.
+         *
+         * @param hideMainScreenTitle if it should show or hide the header's Title on the main screen.
+         * @return the current builder instance
+         */
+        public Builder hideMainScreenTitle(boolean hideMainScreenTitle) {
+            options.setHideMainScreenTitle(hideMainScreenTitle);
             return this;
         }
 
@@ -455,6 +472,28 @@ public class Lock {
         }
 
         /**
+         * Sets the Audience or API Identifier to request access to when performing the Authentication. This only applies if {@link com.auth0.android.Auth0#isOIDCConformant} is true.
+         *
+         * @param audience to use in the Authentication.
+         * @return the current builder instance
+         */
+        public Builder withAudience(@NonNull String audience) {
+            options.withAudience(audience);
+            return this;
+        }
+
+        /**
+         * Specify a custom Scheme for the redirect url used to send the Web Auth results. Default redirect url scheme is 'https'.
+         *
+         * @param scheme to use in the Web Auth redirect uri.
+         * @return the current builder instance
+         */
+        public Builder withScheme(@NonNull String scheme) {
+            options.withScheme(scheme);
+            return this;
+        }
+
+        /**
          * Choose a custom Privacy Policy URL to access when the user clicks the link on the Sign Up form.
          * The default value is 'https://auth0.com/privacy'
          *
@@ -475,6 +514,17 @@ public class Lock {
          */
         public Builder setTermsURL(@NonNull String url) {
             options.setTermsURL(url);
+            return this;
+        }
+
+        /**
+         * Sets the url of your support page for your application that will be used when an error occurs and Lock is unable to handle it. In this case it will show an error screen and if there is a support url will also show a button to open that page in the browser.
+         *
+         * @param url to your support page or where your customers can request assistance. By default no page is set.
+         * @return the current builder instance
+         */
+        public Builder setSupportURL(@NonNull String url) {
+            options.setSupportURL(url);
             return this;
         }
 

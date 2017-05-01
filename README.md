@@ -1,9 +1,9 @@
 Lock for Android
 ============
-[![CI Status](http://img.shields.io/travis/auth0/Lock.Android.svg?style=flat)](https://travis-ci.org/auth0/Lock.Android)
+[![CircleCI](https://img.shields.io/circleci/project/github/auth0/Lock.Android.svg?style=flat-square)](https://circleci.com/gh/auth0/Lock.Android/tree/master)
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat)](http://doge.mit-license.org)
 [![Maven Central](https://img.shields.io/maven-central/v/com.auth0.android/lock.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.auth0.android%22%20AND%20a%3A%22lock%22)
-[![Bintray](https://api.bintray.com/packages/auth0/lock-android/lock/images/download.svg)](https://bintray.com/auth0/lock-android/lock/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/auth0/android/lock/images/download.svg) ](https://bintray.com/auth0/android/lock/_latestVersion)
 
 [Auth0](https://auth0.com) is an authentication broker that supports social identity providers as well as enterprise identity providers such as Active Directory, LDAP, Google Apps and Salesforce.
 
@@ -18,12 +18,12 @@ Lock for Android
 
 Android API Level 15+ is required in order to use Lock's UI.
 
-##Install
+## Install
 
 Lock is available both in [Maven Central](http://search.maven.org) and [JCenter](https://bintray.com/bintray/jcenter). To start using *Lock* add these lines to your `build.gradle` dependencies file:
 
 ```gradle
-compile 'com.auth0.android:lock:2.2.1'
+compile 'com.auth0.android:lock:2.5.0'
 ```
 
 ## Usage
@@ -75,6 +75,7 @@ public class HomeActivity extends Activity {
 
   private Lock lock;
 
+  @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     // Your own Activity code
@@ -159,6 +160,7 @@ public class HomeActivity extends Activity {
 
   private PasswordlessLock lock;
 
+  @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     // Your own Activity code
@@ -201,10 +203,18 @@ Then just start `PasswordlessLockActivity` from inside your `Activity`
 startActivity(lock.newIntent(this));
 ```
 
-##Proguard
-In the [proguard directory](proguard) you can find the *Proguard* configuration for Lock and its dependencies.
+#### Android App Links - Custom Scheme
+Currently the default scheme used for the redirect url used to send the Web Auth results is `https`. This works best for Android Marshmallow (API 23) or newer if you're using [Android App Links](https://developer.android.com/training/app-links/index.html), but in previous Android versions this may show the intent chooser dialog prompting the user to chose either your application or the browser to resolve the intent. You can change this behavior by using a custom unique scheme, so that the OS opens the link directly with your app.
+
+1. Update the Intent Filter definition in the `AndroidManifest.xml` file and change the current scheme to the new one.
+2. Update the allowed callback urls in your [Auth0 Dashboard](https://manage.auth0.com/#/clients) client's settings to match urls that begin with the new scheme.
+3. Call `withScheme()` in the Lock.Builder passing the scheme you want to use.
+
+> The scheme value **must** be lowercase. A warning message will be logged if this is not the case.
+
+## Proguard
+The rules should be applied automatically if your application is using `minifyEnabled = true`. If you want to include them manually check the [proguard directory](proguard).
 By default you should at least use the following files:
-* `proguard-okio.pro`
 * `proguard-gson.pro`
 * `proguard-otto.pro`
 * `proguard-lock-2.pro`
@@ -233,7 +243,7 @@ If you have found a bug or if you have a feature request, please report them at 
 
 ## Author
 
-[Auth0](auth0.com)
+[Auth0](https://auth0.com)
 
 ## License
 
